@@ -18,6 +18,7 @@
    (significant-bits :accessor significant-bits :initform nil)
    (rendering-intent :accessor rendering-intent :initform nil)
    (textual-data :accessor textual-data :initform nil)
+   (preferred-background :accessor preferred-background :initform nil)
    ))
 
 (defvar *png-state* nil)

@@ -3,6 +3,7 @@
   (:export #:read-png-file #:read-png-datastream
 	   #:png-state
 	   #:image-data #:width #:height #:bit-depth
-	   #:colour-type
+	   #:colour-type #:palette
 	   ;ancillaries
-	   #:transparency #:gamma #:significant-bits #:rendering-intent #:textual-data))
+	   #:transparency #:gamma #:significant-bits #:rendering-intent #:textual-data
+	   #:preferred-background))

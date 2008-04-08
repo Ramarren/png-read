@@ -6,7 +6,7 @@ should be able to read back any file produced by ZPNG.
 Usage: read-png-file (file)  and read-png-datastream (stream), both return a  png-state object and a
 boolean to  indicate if CRC  was successful,  which most interesting  property is image-data,  a two
 (grayscale) or  three dimensional array containing  image data. Other properties  are width, height,
-bit-depth and colour-type.
+bit-depth and colour-type. Palette is available, but the data array will already be decoded to colors.
 
 Note that ancillary chunks are mostly untested. They never modify primary image data array directly,
 but provide additional information in slots of png-state object.
@@ -23,3 +23,5 @@ Ancillary chunks:
          and string
   iTXt - if present, text strings are collected in slot texttual-data as an association list of keyword 
          and a list of language tag, translated keyword and translated text
+  bKGD - if present, preferred background is stored in slot preferred-background as an array of color 
+         components (RGB), greyscale datum or palette index

@@ -105,3 +105,12 @@
 					       :encoding :utf-8)
 			     (octets-to-string chunk-data :start (1+ separator-3) :encoding :utf-8))))
 	      (push (list keyw language-tag tkeyw ttext) (textual-data *png-state*))))))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|bKGD|)) chunk-data)
+  (setf (preferred-background *png-state*)
+   (ecase (colour-type *png-state*)
+     ((0 4) (big-endian-vector-to-integer chunk-data))
+     ((2 6) (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
+		    (big-endian-vector-to-integer (subseq chunk-data 2 4))
+		    (big-endian-vector-to-integer (subseq chunk-data 4 6))))
+     (3 (aref chunk-data 0)))))
