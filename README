@@ -8,5 +8,8 @@ boolean to  indicate if CRC  was successful,  which most interesting  property i
 (grayscale) or  three dimensional array containing  image data. Other properties  are width, height,
 bit-depth and colour-type.
 
-Ancillary chunks:
-  tRNS - if present, additional alpha map is stored in transparency slot of png-state object
+Ancillary chunks: 
+  tRNS - if present, additional alpha map is stored in slot transparency 
+  gAMA - if  present, image gamma is stored in slot gamma 
+  sBIT - if present, the original number of significant bits is stored 
+         in slot significant-bits as a property list

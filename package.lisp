@@ -5,4 +5,4 @@
 	   #:image-data #:width #:height #:bit-depth
 	   #:colour-type
 	   ;ancillaries
-	   #:transparency #:gamma))
+	   #:transparency #:gamma #:significant-bits))

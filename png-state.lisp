@@ -15,6 +15,7 @@
    (postprocess-ancillaries :accessor postprocess-ancillaries)
    (transparency :accessor transparency :initform nil)
    (gamma :accessor gamma :initform nil)
+   (significant-bits :accessor significant-bits :initform nil)
    ))
 
 (defvar *png-state* nil)
