@@ -12,7 +12,7 @@
    (datastream :accessor datastream :initform nil)
    (image-data :accessor image-data)
    ;ancillaries
-   (postprocess-ancillaries :accessor postprocess-ancillaries)
+   (postprocess-ancillaries :accessor postprocess-ancillaries :initform nil)
    (transparency :accessor transparency :initform nil)
    (gamma :accessor gamma :initform nil)
    (significant-bits :accessor significant-bits :initform nil)
