@@ -18,7 +18,7 @@
   (check-type byte-vector (vector (unsigned-byte 8)))
   (iter (for i from (1- (length byte-vector)) downto 0)
 	(for j from 0)
-	(summing (ash (aref byte-vector j) i))))
+	(summing (ash (aref byte-vector j) (* 8 i)))))
 
 
 (defun read-png-chunks (png-stream)
@@ -33,11 +33,16 @@
      (assert (eql type-status 4))
      (let ((chunk-length (big-endian-vector-to-integer length-field))
 	   (type-string (map 'string #'code-char type-field)))
-       (let ((chunk-data (make-array chunk-length)))
+       (let ((chunk-data (make-array chunk-length :element-type '(unsigned-byte 8))))
 	 (let ((data-status (read-sequence chunk-data png-stream)))
+	   (print type-string)
+	   (print data-status)
+	   (print chunk-length)
 	   (assert (eql data-status chunk-length))
 	   (let ((crc-status (read-sequence crc-field png-stream)))
 	     (assert (eql crc-status 4))
 	     (let ((read-crc (big-endian-vector-to-integer crc-field))
-		   (computed-crc (updated-crc (crc type-field) chunk-data)))
-	      (collecting (list type-string chunk-data (eql read-crc computed-crc) read-crc computed-crc))))))))))
+		   (computed-crc (finish-crc (updated-crc (start-crc type-field) chunk-data))))
+	      (collecting (list type-string chunk-data (parse-chunk type-string chunk-data) (eql read-crc computed-crc) read-crc computed-crc))))))))))
+
+(defun parse-chunk (chunk-type chunk-data))
