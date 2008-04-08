@@ -9,7 +9,9 @@ boolean to  indicate if CRC  was successful,  which most interesting  property i
 bit-depth and colour-type. Palette is available, but the data array will already be decoded to colors.
 
 Note that ancillary chunks are mostly untested. They never modify primary image data array directly,
-but provide additional information in slots of png-state object. 
+but provide additional  information in slots of png-state object. Of  the ancillary chunks specified
+in http://www.w3.org/TR/2003/REC-PNG-20031110/  missing are: cHRM,  iCCP and sPLT. gAMA  is present,
+but using it is responsibility of library user.
 
 Ancillary chunks: 
   tRNS - if present, additional alpha map is stored in slot transparency 
