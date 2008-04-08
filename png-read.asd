@@ -3,8 +3,9 @@
   :description "A library for reading PNG files."
   :licence "BSD-style"
   :components ((:file "package")
-		(:file "crc" :depends-on ("package"))
-		(:file "critical-chunks" :depends-on ("package"))
-		(:file "ancillary-chunks" :depends-on ("package"))
-		(:file "basic-chunks" :depends-on ("package" "crc" "critical-chunks" "ancillary-chunks")))
+	       (:file "png-state" :depends-on ("package"))
+	       (:file "crc" :depends-on ("package"))
+	       (:file "critical-chunks" :depends-on ("package" "png-state"))
+	       (:file "ancillary-chunks" :depends-on ("package" "png-state"))
+	       (:file "basic-chunks" :depends-on ("package" "crc" "critical-chunks" "ancillary-chunks" "png-state")))
   :depends-on (:iterate :chipz))
