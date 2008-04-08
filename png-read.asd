@@ -9,4 +9,4 @@
 	       (:file "critical-chunks" :depends-on ("package" "png-state"))
 	       (:file "ancillary-chunks" :depends-on ("package" "png-state"))
 	       (:file "basic-chunks" :depends-on ("package" "crc" "critical-chunks" "ancillary-chunks" "png-state")))
-  :depends-on (:iterate :chipz))
+  :depends-on (:iterate :chipz :babel))
