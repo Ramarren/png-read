@@ -1,8 +1,11 @@
 (in-package :png-read)
 
+(defparameter *warn-missing-ancillaries* nil)
+
 (defgeneric parse-ancillary-chunk (chunk-type chunk-data)
   (:method (chunk-type chunk-data)
-    (warn "Unknown ancillary chunk ~a." chunk-type)))
+    (when *warn-missing-ancillaries*
+      (warn "Unknown ancillary chunk ~a." chunk-type))))
 
 (defun build-transparency-map (png-state)
   (let ((w (width png-state))

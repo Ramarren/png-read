@@ -13,6 +13,9 @@ but provide additional  information in slots of png-state object. Of  the ancill
 in http://www.w3.org/TR/2003/REC-PNG-20031110/  missing are: cHRM,  iCCP and sPLT. gAMA  is present,
 but using it is responsibility of library user.
 
+Dynamic variable *warn-missing-ancillaries* controls whether library warns on encountering unknown
+ancillary chunk.
+
 Ancillary chunks: 
   tRNS - if present, additional alpha map is stored in slot transparency 
   gAMA - if  present, image gamma is stored in slot gamma 
