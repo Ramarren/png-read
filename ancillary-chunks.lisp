@@ -38,3 +38,7 @@
   (when (or (eql (colour-type *png-state*) 0)
 	    (eql (colour-type *png-state*) 2))
     (push #'build-transparency-map (postprocess-ancillaries *png-state*))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|gAMA|)) chunk-data)
+  (setf (gamma *png-state*)
+	(big-endian-vector-to-integer chunk-data)))
