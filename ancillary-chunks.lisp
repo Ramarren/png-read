@@ -18,9 +18,12 @@
 			 (0 (if (eql (aref imd i j) transp)
 				0
 				255))
-			 (2 (if (iter (for k from 0 to 2)
-				      (always (eql (aref imd i j k)
-						   (aref transp k))))
+			 (2 (if (every #'identity
+				       ;strange... SBCL hangs during compilation when
+				       ;           always iterate keyword is used
+				       (iter (for k from 0 to 2)
+					     (collect (eql (aref imd i j k)
+							   (aref transp k)))))
 				0
 				255))))))
      (setf (transparency png-state) t-map))))
@@ -43,7 +46,7 @@
   (setf (gamma *png-state*)
 	(big-endian-vector-to-integer chunk-data)))
 
-(defmethod parse-ancillary-chunk ((chunk-type (eql '|sBIT|) chunk-data))
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|sBIT|)) chunk-data)
   (setf (significant-bits *png-state*)
 	(ecase (colour-type *png-state*)
 	  (0 (list :greyscale chunk-data))

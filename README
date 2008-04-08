@@ -1,4 +1,4 @@
-Portable Network Graphics (PNG) decoder for Common Lisp.
+Portable Network Graphics (PNG) decoder (more or less) for Common Lisp.
 
 All critical  chunks are implemented.  Few ancillary chunks  are. No interlacing is  implemented. It
 should be able to read back any file produced by ZPNG.
