@@ -15,10 +15,10 @@
 	   (iter (for j from 0 below h)
 		 (setf (aref t-map i j)
 		       (ecase ct
-			 (0 (if (eql (aref imd i j) transp)
+			 (:greyscale (if (eql (aref imd i j) transp)
 				0
 				255))
-			 (2 (if (every #'identity
+			 (:truecolor (if (every #'identity
 				       ;strange... SBCL hangs during compilation when
 				       ;           always iterate keyword is used
 				       (iter (for k from 0 to 2)
@@ -30,13 +30,13 @@
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|tRNS|)) chunk-data)
   (ecase (colour-type *png-state*)
-    (0 (setf (transparency *png-state*)
+    (:greyscale (setf (transparency *png-state*)
 	     (big-endian-vector-to-integer chunk-data)))
-    (2 (setf (transparency *png-state*)
+    (:truecolor (setf (transparency *png-state*)
 	     (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
 		     (big-endian-vector-to-integer (subseq chunk-data 2 4))
 		     (big-endian-vector-to-integer (subseq chunk-data 4 6)))))
-    (3 (setf (transparency *png-state*)
+    (:indexed-colour (setf (transparency *png-state*)
 	     chunk-data)))
   (when (or (eql (colour-type *png-state*) 0)
 	    (eql (colour-type *png-state*) 2))
@@ -49,13 +49,13 @@
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|sBIT|)) chunk-data)
   (setf (significant-bits *png-state*)
 	(ecase (colour-type *png-state*)
-	  (0 (list :greyscale (aref chunk-data 0)))
-	  ((2 3) (list :red (aref chunk-data 0)
+	  (:greyscale (list :greyscale (aref chunk-data 0)))
+	  ((:truecolor :indexed-colour) (list :red (aref chunk-data 0)
 		       :green (aref chunk-data 1)
 		       :blue (aref chunk-data 2)))
-	  (4 (list :greyscale (aref chunk-data 0)
+	  (:greyscale-alpha (list :greyscale (aref chunk-data 0)
 		   :alpha (aref chunk-data 1)))
-	  (6 (list :red (aref chunk-data 0)
+	  (:truecolor-alpha (list :red (aref chunk-data 0)
 		   :green (aref chunk-data 1)
 		   :blue (aref chunk-data 2)
 		   :alpha (aref chunk-data 3))))))
@@ -109,11 +109,11 @@
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|bKGD|)) chunk-data)
   (setf (preferred-background *png-state*)
    (ecase (colour-type *png-state*)
-     ((0 4) (big-endian-vector-to-integer chunk-data))
-     ((2 6) (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
+     ((:greyscale :greyscale-alpha) (big-endian-vector-to-integer chunk-data))
+     ((:truecolor :truecolor-alpha) (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
 		    (big-endian-vector-to-integer (subseq chunk-data 2 4))
 		    (big-endian-vector-to-integer (subseq chunk-data 4 6))))
-     (3 (aref chunk-data 0)))))
+     (:indexed-colour (aref chunk-data 0)))))
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|hIST|)) chunk-data)
   (setf (image-histogram *png-state*)
