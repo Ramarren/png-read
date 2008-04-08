@@ -9,6 +9,7 @@
    (filter-method :accessor filter-method)
    (interlace-method :accessor interlace-method)
    (pallete :accessor pallete)
-   (datastream :accessor datastream :initform nil)))
+   (datastream :accessor datastream :initform nil)
+   (image-data :accessor image-data)))
 
 (defvar *png-state* nil)

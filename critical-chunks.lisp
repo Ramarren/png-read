@@ -2,7 +2,7 @@
 
 (defgeneric parse-critical-chunk (chunk-type chunk-data)
   (:method (chunk-type chunk-data)
-    (warn "Unknown critical chunk ~a." chunk-type)))
+    (error "Unknown critical chunk ~a." chunk-type)))
 
 (defmethod parse-critical-chunk ((chunk-type (eql '|IHDR|)) chunk-data)
   (let ((width (big-endian-vector-to-integer (subseq chunk-data 0 4)))
