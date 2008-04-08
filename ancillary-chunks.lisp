@@ -73,3 +73,14 @@
     (let ((keyw (octets-to-string chunk-data :end separator :encoding :iso-8859-1))
 	  (text-string (octets-to-string chunk-data :start separator :encoding :iso-8859-1)))
       (push (cons keyw text-string) (textual-data *png-state*)))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|zTXt|)) chunk-data)
+  (let ((separator (position 0 chunk-data)))
+    (let ((keyw (octets-to-string chunk-data :end separator :encoding :iso-8859-1))
+	  (compression-method (aref chunk-data (1+ separator))))
+      (if (not (zerop compression-method))
+	  (cerror "Ignore this zTXt chunk." "Unknown text compression method in zTXt chunk.")
+	  (let ((text-string (octets-to-string
+			      (decompress nil :zlib chunk-data :input-start (+ separator 2))
+			      :encoding :iso-8859-1)))
+	    (push (cons keyw text-string) (textual-data *png-state*)))))))

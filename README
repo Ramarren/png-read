@@ -1,6 +1,6 @@
 Portable Network Graphics (PNG) decoder (more or less) for Common Lisp.
 
-All critical  chunks are implemented.  Few ancillary chunks  are. No interlacing is  implemented. It
+All critical  chunks are implemented.  Some ancillary chunks  are. No interlacing is  implemented. It
 should be able to read back any file produced by ZPNG.
 
 Usage: read-png-file (file)  and read-png-datastream (stream), both return a  png-state object and a
@@ -15,3 +15,4 @@ Ancillary chunks:
          in slot significant-bits as a property list
   sRGB - if present, rendering intent is storen in slot rendering-intent as a keyword symbol
   tEXt - if present, text strings are collected in slot textual-data as an association list
+  zTXt - if present, text strings are collected in slot textual-data as an association list
