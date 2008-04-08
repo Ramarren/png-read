@@ -206,6 +206,8 @@
 
 (defun finish-decoding (png-state)
   (let ((decompressed-data (decompress nil :zlib (datastream png-state))))
-    (decode-data (colour-type png-state) decompressed-data png-state)
+    (ecase (interlace-method png-state)
+      (:no-interlace (decode-data (colour-type png-state) decompressed-data png-state))
+      (:adam7-interlace (decode-interlaced decompressed-data png-state)))
     (values (image-data png-state)
 	    png-state)))

@@ -14,7 +14,7 @@
     (dotimes (x w i-array)
       (dotimes (y h)
 	(setf (aref i-array x y)
-	      (aref *adam7* (mod x 8) (mod y 8)))))))
+	      (aref *adam7* (mod y 8) (mod x 8)))))))
 
 (defun make-deinterlace-arrays (pass-array)
   (let ((leaves (make-array 7 :initial-element nil)))
@@ -23,7 +23,7 @@
        (dotimes (y h)
 	 (push (list x y) (aref leaves (1- (aref pass-array x y)))))))))
 
-(defun get-width-passlist (pass-list)
+(defun get-height-passlist (pass-list)
   (let ((init-x (caar pass-list)))
     (iter (for d in pass-list)
 	  (while (eql init-x (car d)))
@@ -33,20 +33,20 @@
   (let ((ctr 0))
    (iter (for w in sub-widths)
 	 (for h in sub-heights)
-	 (let ((end-ctr (+ h (ceiling (* w h bd) 8))))
-	  (collect (subseq datastream ctr end-ctr))
-	  (setf ctr end-ctr)))))
+	 (let ((end-ctr (+ ctr h (ceiling (* w h bd) 8))))
+	   (collect (subseq datastream ctr end-ctr))
+	   (setf ctr end-ctr)))))
 
-(defun decode-subimages (png-state)
+(defun decode-subimages (data png-state)
   (let ((w (width png-state))
 	(h (height png-state)))
     (let ((sub-array (make-deinterlace-arrays (make-interlace-pass-array w h))))
-     (let ((sub-widths (map 'list #'get-width-passlist sub-array)))
-       (let ((sub-heights (mapcar #'(lambda (lt wi)
-				      (/ (length lt) wi))
-				  sub-array sub-widths)))
-	 (let ((datastreams (split-datastream (bit-depth png-state)
-					      (datastream png-state)
+     (let ((sub-heights (map 'list #'get-width-passlist sub-array)))
+       (let ((sub-widths (map 'list #'(lambda (lt wi)
+					(/ (length lt) wi))
+			      sub-array sub-heights)))
+	 (let ((datastreams (split-datastream data
+					      (bit-depth png-state)
 					      sub-widths
 					      sub-heights)))
 	   (iter (for i from 0 below 7)
@@ -56,4 +56,8 @@
 		 (setf (width png-state) w
 		       (height png-state) h)
 		 (decode-data (colour-type png-state) datastream png-state)
-		 (collect (image-data png-state))))))))) 
+		 (collect (image-data png-state)))))))))
+
+(defun decode-interlaced (data png-state)
+  (let ((sub-images (decode-subimages data png-state)))
+    (setf (image-data png-state) sub-images)))
