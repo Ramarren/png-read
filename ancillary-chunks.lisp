@@ -121,3 +121,11 @@
 		      (collect (+ (* (aref chunk-data k) 256)
 				  (aref chunk-data (1+ k)))))
 		'(vector (unsigned-byte 16)))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|pHYs|)) chunk-data)
+  (setf (physical-dimensions *png-state*)
+	(list :x-axis (big-endian-vector-to-integer (subseq chunk-data 0 4))
+	      :y-axis (big-endian-vector-to-integer (subseq chunk-data 4 8))
+	      :unit (ecase (aref chunk-data 8)
+		      (0 :unknown)
+		      (1 :metre)))))

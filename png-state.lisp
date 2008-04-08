@@ -20,6 +20,7 @@
    (textual-data :accessor textual-data :initform nil)
    (preferred-background :accessor preferred-background :initform nil)
    (image-histogram :accessor image-histogram :initform nil)
+   (physical-dimensions :accessor physical-dimensions :initform nil)
    ))
 
 (defvar *png-state* nil)

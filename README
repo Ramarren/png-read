@@ -25,3 +25,5 @@ Ancillary chunks:
          and a list of language tag, translated keyword and translated text
   bKGD - if present, preferred background is stored in slot preferred-background as an array of color 
          components (RGB), greyscale datum or palette index
+  hIST - if present, image histogram is stored in slot image-histogram as an array
+  pHYS - if present, intended pixel size is stored in slot physical-dimensions as a property list
