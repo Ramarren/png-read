@@ -18,5 +18,11 @@
 	      (logxor (aref *crc-array* (logand (logxor c d) #xff)) (ash c -8)))
 	  data :initial-value crc))
 
+(defun start-crc (data)
+  (updated-crc #xffffffff data))
+
+(defun finish-crc (crc)
+  (logxor crc #xffffffff))
+
 (defun crc (data)
-  (logxor (updated-crc #xffffffff data) #xffffffff))
+  (finish-crc (start-crc data)))
