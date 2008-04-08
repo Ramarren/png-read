@@ -14,4 +14,4 @@ Ancillary chunks:
   sBIT - if present, the original number of significant bits is stored 
          in slot significant-bits as a property list
   sRGB - if present, rendering intent is storen in slot rendering-intent as a keyword symbol
-  
+  tEXt - if present, text strings are collected in slot textual-data as an association list

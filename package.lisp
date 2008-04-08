@@ -5,4 +5,4 @@
 	   #:image-data #:width #:height #:bit-depth
 	   #:colour-type
 	   ;ancillaries
-	   #:transparency #:gamma #:significant-bits #:rendering-intent))
+	   #:transparency #:gamma #:significant-bits #:rendering-intent #:textual-data))

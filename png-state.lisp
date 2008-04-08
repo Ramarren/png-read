@@ -17,6 +17,7 @@
    (gamma :accessor gamma :initform nil)
    (significant-bits :accessor significant-bits :initform nil)
    (rendering-intent :accessor rendering-intent :initform nil)
+   (textual-data :accessor textual-data :initform nil)
    ))
 
 (defvar *png-state* nil)

@@ -67,3 +67,9 @@
 	  (1 :relative-colorimetric)
 	  (2 :saturation)
 	  (3 :absolute-colorimetric))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|tEXt|)) chunk-data)
+  (let ((separator (position 0 chunk-data)))
+    (let ((keyw (octets-to-string chunk-data :end separator :encoding :iso-8859-1))
+	  (text-string (octets-to-string chunk-data :start separator :encoding :iso-8859-1)))
+      (push (cons keyw text-string) (textual-data *png-state*)))))
