@@ -49,7 +49,7 @@
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|sBIT|)) chunk-data)
   (setf (significant-bits *png-state*)
 	(ecase (colour-type *png-state*)
-	  (0 (list :greyscale chunk-data))
+	  (0 (list :greyscale (aref chunk-data 0)))
 	  ((2 3) (list :red (aref chunk-data 0)
 		       :green (aref chunk-data 1)
 		       :blue (aref chunk-data 2)))
