@@ -26,8 +26,6 @@
 	(type-field (make-array 4 :element-type '(unsigned-byte 8)))
 	(crc-field (make-array 4 :element-type '(unsigned-byte 8)))
 	(*png-state* (make-instance 'png-state)))
-   (values
-    *png-state*
     (iter
       (for read-status next (read-sequence length-field png-stream))
       (for type-status next (read-sequence type-field png-stream))
@@ -48,7 +46,8 @@
 				  (parse-chunk type-string chunk-data)
 				  (eql read-crc computed-crc)
 				  read-crc
-				  computed-crc)))))))))))
+				  computed-crc))))))))
+    *png-state*))
 
 (defun parse-chunk (chunk-type chunk-data)
   (let ((criticalp (char= (char chunk-type 0) (char (string-upcase chunk-type :end 1) 0))))
