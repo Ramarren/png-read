@@ -16,6 +16,7 @@
    (transparency :accessor transparency :initform nil)
    (gamma :accessor gamma :initform nil)
    (significant-bits :accessor significant-bits :initform nil)
+   (rendering-intent :accessor rendering-intent :initform nil)
    ))
 
 (defvar *png-state* nil)

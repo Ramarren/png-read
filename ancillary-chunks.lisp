@@ -59,3 +59,11 @@
 		   :green (aref chunk-data 1)
 		   :blue (aref chunk-data 2)
 		   :alpha (aref chunk-data 3))))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|sRGB|)) chunk-data)
+  (setf (rendering-intent *png-state*)
+	(ecase chunk-data
+	  (0 :perceptual)
+	  (1 :relative-colorimetric)
+	  (2 :saturation)
+	  (3 :absolute-colorimetric))))

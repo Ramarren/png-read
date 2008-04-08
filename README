@@ -13,3 +13,5 @@ Ancillary chunks:
   gAMA - if  present, image gamma is stored in slot gamma 
   sBIT - if present, the original number of significant bits is stored 
          in slot significant-bits as a property list
+  sRGB - if present, rendering intent is storen in slot rendering-intent as a keyword symbol
+  
