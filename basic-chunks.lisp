@@ -42,11 +42,12 @@
 		     (assert (eql crc-status 4))
 		     (let ((read-crc (big-endian-vector-to-integer crc-field))
 			   (computed-crc (finish-crc (updated-crc (start-crc type-field) chunk-data))))
+		       (parse-chunk type-string chunk-data)
 		       (collect (eql read-crc computed-crc))))))))))
       (values *png-state* (every #'identity crc-ok)))))
 
 (defun parse-chunk (chunk-type chunk-data)
   (let ((criticalp (char= (char chunk-type 0) (char (string-upcase chunk-type :end 1) 0))))
     (if criticalp
-	(parse-critical-chunk (intern chunk-type) chunk-data)
-	(parse-ancillary-chunk (intern chunk-type) chunk-data))))
+	(parse-critical-chunk (intern chunk-type (find-package :png-read)) chunk-data)
+	(parse-ancillary-chunk (intern chunk-type (find-package :png-read)) chunk-data))))
