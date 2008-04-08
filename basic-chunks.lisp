@@ -45,4 +45,8 @@
 		   (computed-crc (finish-crc (updated-crc (start-crc type-field) chunk-data))))
 	      (collecting (list type-string chunk-data (parse-chunk type-string chunk-data) (eql read-crc computed-crc) read-crc computed-crc))))))))))
 
-(defun parse-chunk (chunk-type chunk-data))
+(defun parse-chunk (chunk-type chunk-data)
+  (let ((criticalp (char= (char chunk-type 0) (char (string-upcase chunk-type :end 1) 0))))
+    (if criticalp
+	(parse-critical-chunk (intern chunk-type) chunk-data)
+	(parse-ancillary-chunk (intern chunk-type) chunk-data))))
