@@ -129,3 +129,12 @@
 	      :unit (ecase (aref chunk-data 8)
 		      (0 :unknown)
 		      (1 :metre)))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|tIME|)) chunk-data)
+  (setf (last-modification *png-state*)
+	(encode-universal-time (aref chunk-data 6)
+			       (aref chunk-data 5)
+			       (aref chunk-data 4)
+			       (aref chunk-data 3)
+			       (aref chunk-data 2)
+			       (big-endian-vector-to-integer (subseq chunk-data 0 2)))))

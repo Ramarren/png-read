@@ -1,6 +1,6 @@
 Portable Network Graphics (PNG) decoder (more or less) for Common Lisp.
 
-All critical  chunks are implemented.  Some ancillary chunks  are. No interlacing is  implemented. It
+All critical  chunks are implemented.  Most ancillary chunks  are. No interlacing is  implemented. It
 should be able to read back any file produced by ZPNG.
 
 Usage: read-png-file (file)  and read-png-datastream (stream), both return a  png-state object and a
@@ -9,7 +9,7 @@ boolean to  indicate if CRC  was successful,  which most interesting  property i
 bit-depth and colour-type. Palette is available, but the data array will already be decoded to colors.
 
 Note that ancillary chunks are mostly untested. They never modify primary image data array directly,
-but provide additional information in slots of png-state object.
+but provide additional information in slots of png-state object. 
 
 Ancillary chunks: 
   tRNS - if present, additional alpha map is stored in slot transparency 
@@ -27,3 +27,4 @@ Ancillary chunks:
          components (RGB), greyscale datum or palette index
   hIST - if present, image histogram is stored in slot image-histogram as an array
   pHYS - if present, intended pixel size is stored in slot physical-dimensions as a property list
+  tIME - if present, last modification time is stored in slot last-modification as an universal time
