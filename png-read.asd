@@ -4,6 +4,7 @@
   :licence "BSD-style"
   :components ((:file "package")
 	       (:file "png-state" :depends-on ("package"))
+	       (:file "deinterlace" :depends-on ("package" "png-state"))
 	       (:file "decode" :depends-on ("package" "png-state"))
 	       (:file "crc" :depends-on ("package"))
 	       (:file "critical-chunks" :depends-on ("package" "png-state"))
