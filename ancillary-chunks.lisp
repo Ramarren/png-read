@@ -114,3 +114,10 @@
 		    (big-endian-vector-to-integer (subseq chunk-data 2 4))
 		    (big-endian-vector-to-integer (subseq chunk-data 4 6))))
      (3 (aref chunk-data 0)))))
+
+(defmethod parse-ancillary-chunk ((chunk-type (eql '|hIST|)) chunk-data)
+  (setf (image-histogram *png-state*)
+	(coerce (iter (for k index-of-vector chunk-data by 2)
+		      (collect (+ (* (aref chunk-data k) 256)
+				  (aref chunk-data (1+ k)))))
+		'(vector (unsigned-byte 16)))))

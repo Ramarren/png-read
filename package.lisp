@@ -6,4 +6,4 @@
 	   #:colour-type #:palette
 	   ;ancillaries
 	   #:transparency #:gamma #:significant-bits #:rendering-intent #:textual-data
-	   #:preferred-background))
+	   #:preferred-background #:image-histogram))
