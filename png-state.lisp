@@ -10,6 +10,10 @@
    (interlace-method :accessor interlace-method)
    (pallete :accessor pallete)
    (datastream :accessor datastream :initform nil)
-   (image-data :accessor image-data)))
+   (image-data :accessor image-data)
+   ;ancillaries
+   (postprocess-ancillaries :accessor postprocess-ancillaries)
+   (transparency :accessor transparency :initform nil)
+   ))
 
 (defvar *png-state* nil)
