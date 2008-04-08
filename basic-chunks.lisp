@@ -12,4 +12,4 @@
     (cond
       ((every #'eql *png-header* header)
        (read-png-chunks png-stream))
-      (error "Not PNG file."))))
+      (t (error "Not PNG file.")))))
