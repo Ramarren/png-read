@@ -41,7 +41,7 @@
      (setf (pallete *png-state*) pallete-array))))
 
 (defmethod parse-critical-chunk ((chunk-type (eql '|IDAT|)) chunk-data)
-  (setf (datastream *png-state*) (concatenate '(unsigned-byte 8) (datastream *png-state*) chunk-data)))
+  (setf (datastream *png-state*) (concatenate '(vector (unsigned-byte 8)) (datastream *png-state*) chunk-data)))
 
 (defmethod parse-critical-chunk ((chunk-type (eql '|IEND|)) chunk-data)
   nil)
