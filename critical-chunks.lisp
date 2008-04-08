@@ -18,7 +18,7 @@
 	  (colour-type *png-state*) (ecase colour-type
 				      (0 :greyscale)
 				      (2 :truecolor)
-				      (3 :indexed-color)
+				      (3 :indexed-colour)
 				      (4 :greyscale-alpha)
 				      (6 :truecolor-alpha))
 	  (compression *png-state*) (ecase compression
