@@ -41,9 +41,12 @@
      (setf (pallete *png-state*) pallete-array))))
 
 (defmethod parse-critical-chunk ((chunk-type (eql '|IDAT|)) chunk-data)
+  (when (zerop (length chunk-data))
+    (cerror "Ignore this chunk." "Empty IDAT chunk."))
   (setf (datastream *png-state*) (concatenate '(vector (unsigned-byte 8)) (datastream *png-state*) chunk-data)))
 
 (defmethod parse-critical-chunk ((chunk-type (eql '|IEND|)) chunk-data)
   (finish-decoding *png-state*)
   (dolist (tk (postprocess-ancillaries *png-state*))
-    (funcall tk *png-state*)))
+    (funcall tk *png-state*))
+  (setf (finished *png-state*) t))

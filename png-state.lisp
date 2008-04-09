@@ -1,7 +1,9 @@
 (in-package :png-read)
 
 (defclass png-state ()
-  ((width :accessor width)
+  ((file :accessor png-file :initform nil)
+   (finished :accessor finished :initform nil)
+   (width :accessor width)
    (height :accessor height)
    (bit-depth :accessor bit-depth)
    (colour-type :accessor colour-type)

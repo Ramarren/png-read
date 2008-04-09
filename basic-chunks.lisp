@@ -1,8 +1,11 @@
 (in-package :png-read)
 
+(defvar *png-file* nil)
+
 (defun read-png-file (file)
-  (with-open-file (png-stream file :direction :input :element-type '(unsigned-byte 8))
-    (read-png-datastream png-stream)))
+  (let ((*png-file* file))
+   (with-open-file (png-stream file :direction :input :element-type '(unsigned-byte 8))
+     (read-png-datastream png-stream))))
 
 (defvar *png-header* #(137 80 78 71 13 10 26 10))
 
@@ -12,7 +15,9 @@
     (cond
       ((every #'eql *png-header* header)
        (read-png-chunks png-stream))
-      (t (error "Not PNG file.")))))
+      (t (if *png-file*
+	     (error "File ~a is not a PNG file." *png-file*)
+	     (error "Not PNG datastream."))))))
 
 (defun big-endian-vector-to-integer (byte-vector)
   (check-type byte-vector (vector (unsigned-byte 8)))
@@ -26,6 +31,7 @@
 	(type-field (make-array 4 :element-type '(unsigned-byte 8)))
 	(crc-field (make-array 4 :element-type '(unsigned-byte 8)))
 	(*png-state* (make-instance 'png-state)))
+    (if *png-file* (setf (png-file *png-state*) *png-file*))
     (let ((crc-ok
 	   (iter
 	     (for read-status next (read-sequence length-field png-stream))
@@ -44,6 +50,10 @@
 			   (computed-crc (finish-crc (updated-crc (start-crc type-field) chunk-data))))
 		       (parse-chunk type-string chunk-data)
 		       (collect (eql read-crc computed-crc))))))))))
+      (unless (finished *png-state*)
+	(if (png-file *png-state*)
+	    (error "No IEND chunk in file ~a." (png-file *png-state*))
+	    (error "No IEND chunk in stream.")))
       (values *png-state* (every #'identity crc-ok)))))
 
 (defun parse-chunk (chunk-type chunk-data)

@@ -218,6 +218,10 @@
   scanlines)
 
 (defun finish-decoding (png-state)
+  (unless (datastream png-state)
+    (if (png-file png-state)
+	(error "No data in image file ~a." (png-file png-state))
+	(error "No data in stream.")))
   (let ((decompressed-data (decompress nil :zlib (datastream png-state))))
     (ecase (interlace-method png-state)
       (:no-interlace (decode-data (colour-type png-state) decompressed-data png-state))
