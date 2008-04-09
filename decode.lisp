@@ -105,7 +105,7 @@
 							(aref transp idx)
 							255))))))
 			  (8 (set-image-slice-to-index (1- xi) k x pal image-data)
-			     (if t-map (setf (aref t-map xi k)
+			     (if t-map (setf (aref t-map (1- xi) k)
 					     (if (array-in-bounds-p transp x)
 						 (aref transp x)
 						 255)))))))
