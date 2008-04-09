@@ -42,7 +42,7 @@
 			       (big-endian-vector-to-integer (subseq chunk-data 2 4))
 			       (big-endian-vector-to-integer (subseq chunk-data 4 6)))))
      (:indexed-colour (setf (transparency *png-state*)
-			    (aref chunk-data 0)))))
+			    chunk-data))))
   (when (or (eql (colour-type *png-state*) 0)
 	    (eql (colour-type *png-state*) 2))
     (push #'build-transparency-map (postprocess-ancillaries *png-state*))))
