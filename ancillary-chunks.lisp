@@ -32,7 +32,8 @@
      (setf (transparency png-state) t-map))))
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|tRNS|)) chunk-data)
-  (when (eql (interlace-method *png-state*) :no-interlace)
+  (when (or (eql (interlace-method *png-state*) :no-interlace)
+	    (not (eql (colour-type *png-state*) :indexed-colour)))
    (ecase (colour-type *png-state*)
      (:greyscale (setf (transparency *png-state*)
 		       (big-endian-vector-to-integer chunk-data)))
@@ -41,7 +42,7 @@
 			       (big-endian-vector-to-integer (subseq chunk-data 2 4))
 			       (big-endian-vector-to-integer (subseq chunk-data 4 6)))))
      (:indexed-colour (setf (transparency *png-state*)
-			    chunk-data))))
+			    (aref chunk-data 0)))))
   (when (or (eql (colour-type *png-state*) 0)
 	    (eql (colour-type *png-state*) 2))
     (push #'build-transparency-map (postprocess-ancillaries *png-state*))))
