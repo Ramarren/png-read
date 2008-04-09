@@ -6,7 +6,11 @@ file produced by ZPNG. Interlaced files can be read, but without progressive loa
 Usage: read-png-file (file)  and read-png-datastream (stream), both return a  png-state object and a
 boolean to  indicate if CRC  was successful,  which most interesting  property is image-data,  a two
 (grayscale) or  three dimensional array containing  image data. Other properties  are width, height,
-bit-depth and colour-type. Palette is available, but the data array will already be decoded to colors.
+bit-depth and  colour-type. Palette  is available,  but the data  array will  already be  decoded to
+colors. If file was loaded by read-png-file slot png-file containts pathname used.
+
+The library  loads all files from  http://www.schaik.com/pngsuite/ , but  I did not check  wheter it
+does so correctly.
 
 Note that ancillary chunks are mostly untested. They never modify primary image data array directly,
 but provide additional  information in slots of png-state object. Of  the ancillary chunks specified
