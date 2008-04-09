@@ -7,9 +7,9 @@ Usage: read-png-file (file)  and read-png-datastream (stream), both return a  pn
 boolean to  indicate if CRC  was successful,  which most interesting  property is image-data,  a two
 (grayscale) or  three dimensional array containing  image data. Other properties  are width, height,
 bit-depth and  colour-type. Palette  is available,  but the data  array will  already be  decoded to
-colors. If file was loaded by read-png-file slot png-file containts pathname used.
+colors. If file was loaded by read-png-file slot png-file contains pathname used.
 
-The library  loads all files from  http://www.schaik.com/pngsuite/ , but  I did not check  wheter it
+The library  loads all files from  http://www.schaik.com/pngsuite/ , but  I did not check  whether it
 does so correctly.
 
 Note that ancillary chunks are mostly untested. They never modify primary image data array directly,
