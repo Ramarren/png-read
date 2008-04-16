@@ -13,6 +13,7 @@
    (pallete :accessor pallete)
    (datastream :accessor datastream :initform nil)
    (image-data :accessor image-data)
+   (index-data :accessor index-data :initform nil)
    ;ancillaries
    (postprocess-ancillaries :accessor postprocess-ancillaries :initform nil)
    (transparency :accessor transparency :initform nil)
