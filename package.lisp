@@ -1,7 +1,7 @@
 (defpackage #:png-read
   (:use #:cl #:iterate #:chipz #:babel)
   (:export #:read-png-file #:read-png-datastream
-	   #:png-state
+	   #:png-state #:crc-failure #:*crc-fail-behaviour*
 	   #:image-data #:width #:height #:bit-depth
 	   #:colour-type #:palette
 	   ;ancillaries

@@ -1,6 +1,18 @@
 (in-package :png-read)
 
 (defvar *png-file* nil)
+(defvar *crc-fail-behaviour* :error)
+
+(define-condition crc-failure (warning)
+  ((file :initarg :file :reader file-of)
+   (crc-is :initarg :crc-is :reader crc-is-of)
+   (crc-read :initarg :crc-read :reader crc-read-of))
+  (:report (lambda (c stream)
+	     (if (file-of c)
+		 (format stream "Checksum failure in file ~a. Computed: #x~x, read: #x~x."
+			 (file-of c) (crc-is-of c) (crc-read-of c))
+		 (format stream "Checksum failure in datastream. Computed: #x~x, read: #x~x."
+			 (crc-is-of c) (crc-read-of c))))))
 
 (defun read-png-file (file)
   (let ((*png-file* file))
@@ -49,6 +61,16 @@
 		     (let ((read-crc (big-endian-vector-to-integer crc-field))
 			   (computed-crc (finish-crc (updated-crc (start-crc type-field) chunk-data))))
 		       (parse-chunk type-string chunk-data)
+		       (unless (eql read-crc computed-crc)
+			 (let ((condition (make-condition 'crc-failure
+							  :file *png-file*
+							  :crc-is computed-crc
+							  :crc-read read-crc)))
+			  (with-simple-restart (ignore-crc-failure "Ignore checksum failure.")
+			   (ecase *crc-fail-behaviour*
+			     (:error (error condition))
+			     (:warn (warn condition ))
+			     ((:no-action nil) nil)))))
 		       (collect (eql read-crc computed-crc))))))))))
       (unless (finished *png-state*)
 	(if (png-file *png-state*)
