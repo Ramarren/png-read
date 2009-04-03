@@ -49,7 +49,7 @@
             (let ((,end-gensym
                    ,(if end
                         end
-                        `(lenght ,seq-gensym))))
+                        `(length ,seq-gensym))))
               (iter (for i from (- ,end-gensym ,start-gensym 1) downto 0)
                     (for j from ,start-gensym)
                     (summing (ash (aref ,seq-gensym j) (* 8 i))))))))
