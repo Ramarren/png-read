@@ -34,17 +34,12 @@ ancillary chunk.
 
 -  `tRNS` - if present, additional alpha map is stored in slot `transparency` 
 -  `gAMA` - if  present, image gamma is stored in slot `gamma` 
--  `sBIT` - if present, the original number of significant bits is stored 
-         in slot `significant-bits` as a property list
+-  `sBIT` - if present, the original number of significant bits is stored in slot `significant-bits` as a property list
 -  `sRGB` - if present, rendering intent is stored in slot `rendering-intent` as a keyword symbol
--  `tEXt` - if present, text strings are collected in slot `textual-data` as an association list of keyword 
-         and string
--  `zTXt` - if present, text strings are collected in slot `textual-data` as an association list of keyword 
-         and string
--  `iTXt` - if present, text strings are collected in slot `textual-data` as an association list of keyword 
-         and a list of language tag, translated keyword and translated text
--  `bKGD` - if present, preferred background is stored in slot `preferred-background` as an array of color 
-         components (RGB), greyscale datum or palette index
+-  `tEXt` - if present, text strings are collected in slot `textual-data` as an association list of keyword and string
+-  `zTXt` - if present, text strings are collected in slot `textual-data` as an association list of keyword and string
+-  `iTXt` - if present, text strings are collected in slot `textual-data` as an association list of keyword and a list of language tag, translated keyword and translated text
+-  `bKGD` - if present, preferred background is stored in slot `preferred-background` as an array of color components (RGB), greyscale datum or palette index
 -  `hIST` - if present, image histogram is stored in slot `image-histogram` as an array
 -  `pHYS` - if present, intended pixel size is stored in slot `physical-dimensions` as a property list
 -  `tIME` - if present, last modification time is stored in slot `last-modification` as an universal time
