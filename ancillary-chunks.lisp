@@ -74,7 +74,7 @@
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|sRGB|)) chunk-data)
   (setf (rendering-intent *png-state*)
-        (ecase chunk-data
+        (ecase (aref chunk-data 0)
           (0 :perceptual)
           (1 :relative-colorimetric)
           (2 :saturation)
