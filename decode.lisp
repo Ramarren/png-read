@@ -68,7 +68,7 @@
      (setf (image-data png-state)
            (make-array (list w h 3) :element-type '(unsigned-byte 8)))
      (setf (index-data png-state)
-           (make-array (list w h) :element-type `(unsignned-byte ,bd)))
+           (make-array (list w h) :element-type `(unsigned-byte ,bd)))
      (let ((scanlines (get-scanlines data h (1+ (ceiling (* bd w) 8)))))
        (unfilter-scanlines scanlines (* bda 4))
        (let ((image-data (image-data png-state))
