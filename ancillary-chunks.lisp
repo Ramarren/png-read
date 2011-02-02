@@ -102,7 +102,7 @@
     (let ((keyw (octets-to-string chunk-data :end separator :encoding :iso-8859-1))
           (compression-flag (aref chunk-data (1+ separator)))
           (compression-method (aref chunk-data (+ separator 2)))
-          (separator-2 (position 0 chunk-data :start (1+ separator))))
+          (separator-2 (position 0 chunk-data :start (+ separator 3))))
       (if (and (eql compression-flag 1)
                (not (zerop compression-method)))
           (cerror "Ignore this iTXt chunk." "Unknown text compression method in iTXt chunk.")
