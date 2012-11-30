@@ -1,5 +1,5 @@
 (asdf:defsystem png-read
-  :version "0.3"
+  :version "0.3.1"
   :description "A library for reading PNG files."
   :licence "BSD-style"
   :components ((:file "package")
