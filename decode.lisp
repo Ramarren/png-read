@@ -180,7 +180,6 @@
                 (t c)))))))
 
 (defun unfilter-scanlines (scanlines pixel-length)
-  (print (aref scanlines 0))
   (iter (for scanline in-vector scanlines with-index k)
     (unless (zerop (length scanline))
       (ecase (aref scanline 0)
