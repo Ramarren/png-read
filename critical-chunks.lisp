@@ -43,10 +43,18 @@
 (defmethod parse-critical-chunk ((chunk-type (eql '|IDAT|)) chunk-data)
   (when (zerop (length chunk-data))
     (cerror "Ignore this chunk." "Empty IDAT chunk."))
-  (setf (datastream *png-state*) (concatenate '(vector (unsigned-byte 8)) (datastream *png-state*) chunk-data)))
+  (push chunk-data (datastream *png-state*)))
 
 (defmethod parse-critical-chunk ((chunk-type (eql '|IEND|)) chunk-data)
+  (let* ((l (reduce #'+ (datastream *png-state*) :key #'length))
+         (v (make-array (list l) :element-type '(unsigned-byte 8))))
+    (loop
+      for start = 0 then (+ start (length chunk))
+      for chunk of-type (simple-array (unsigned-byte 8) (*)) in (reverse (datastream *png-state*))
+      do (replace v chunk :start1 start))
+    (setf (datastream *png-state*) v))
   (finish-decoding *png-state*)
   (dolist (tk (postprocess-ancillaries *png-state*))
     (funcall tk *png-state*))
   (setf (finished *png-state*) t))
+
