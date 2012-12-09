@@ -57,4 +57,3 @@
   (dolist (tk (postprocess-ancillaries *png-state*))
     (funcall tk *png-state*))
   (setf (finished *png-state*) t))
-
