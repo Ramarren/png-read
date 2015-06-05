@@ -1,5 +1,6 @@
 (asdf:defsystem png-read
   :version "0.3.1"
+  :author "Jakub Higersberger <ramarren@gmail.com>"
   :description "A library for reading PNG files."
   :licence "BSD-style"
   :components ((:file "package")
