@@ -70,7 +70,7 @@
       (setf (index-data png-state)
             (make-array (list w h) :element-type `(unsigned-byte ,bd)))
       (let ((scanlines (get-scanlines data h (1+ (ceiling (* bd w) 8)))))
-        (unfilter-scanlines scanlines (* bda 4))
+        (unfilter-scanlines scanlines bda)
         (let ((image-data (image-data png-state))
               (index-data (index-data png-state)))
           (iter (for scanline in-vector scanlines with-index k)
