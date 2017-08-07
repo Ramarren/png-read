@@ -10,7 +10,7 @@
    (compression :accessor compression)
    (filter-method :accessor filter-method)
    (interlace-method :accessor interlace-method)
-   (pallete :accessor pallete)
+   (palette :accessor palette)
    (datastream :accessor datastream :initform nil)
    (image-data :accessor image-data)
    (index-data :accessor index-data :initform nil)

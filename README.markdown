@@ -16,7 +16,7 @@ Dynamic  variable `*crc-fail-behaviour*`  can be  set to  one of  `:error`, `:wa
 (default is  `:error`), and controls  what happens  on checksum failure.   Error signalled is  of type
 `png-read:crc-failure`, and restart `png-read:ignore-crc-failure` is established.
 
-For indexed  images slot index-data  contains an  array with indices  in pallete (stored  in `pallete`
+For indexed  images slot index-data  contains an  array with indices  in palette (stored  in `palette`
 slot), and `image-data` contains decoded colors.
 
 The library loads all files from  [PNG Suite](http://www.schaik.com/pngsuite/) , but I did not check

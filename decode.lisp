@@ -96,15 +96,15 @@
                                   finally (return s)))))
     png-state))
 
-(defun set-image-slice-to-index (x y idx pallete image-data)
+(defun set-image-slice-to-index (x y idx palette image-data)
   (iter (for k from 0 below 3)
     (setf (aref image-data x y k)
-          (aref pallete idx k))))
+          (aref palette idx k))))
 
 (defmethod decode-data ((colour-type (eql :indexed-colour)) data png-state)
   (let* ((h (height png-state))
          (w (width png-state))
-         (pal (pallete png-state))
+         (pal (palette png-state))
          (bd (bit-depth png-state))
          (bda (max 1 (/ bd 8)))
          (scanlines (get-scanlines data h (1+ (ceiling (* bd w) 8)))))
