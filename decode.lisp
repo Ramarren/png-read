@@ -123,17 +123,25 @@
   (let ((h (height png-state))
         (w (width png-state))
         (bd (bit-depth png-state)))
+    (declare (type (unsigned-byte 32) w h bd))
     (let ((bda (/ bd 8)))
+      (declare (type (unsigned-byte 3) bda))
       (setf (image-data png-state)
             (make-array (list w h 4) :element-type `(unsigned-byte ,bd)))
       (let ((scanlines (get-scanlines data h (1+ (* bda w 4)))))
+        (declare (simple-vector scanlines))
         (unfilter-scanlines scanlines (* bda 4))
-        (let ((image-data (image-data png-state)))
-          (iter (for scanline in-vector scanlines with-index k)
-            (iter (for x in-vector scanline from 1 with-index xi by bda)
-              (for y from 0)
-              (setf (aref image-data (floor (1- xi) (* bda 4)) k (mod y 4))
-                    (big-endian-vector-to-integer (subseq scanline xi (+ xi bda)))))))
+        (loop with image-data of-type (simple-array (unsigned-byte 8) (* * *)) = (image-data png-state)
+              for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
+              for k of-type (unsigned-byte 32) from 0
+              do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
+                       for y of-type (unsigned-byte 32) from 0
+                       do (setf (aref image-data (floor y (* bda 4)) k (mod y 4))
+                                (loop for i of-type (signed-byte 8) from (1- bda) downto 0
+                                      for j of-type (unsigned-byte 32) from xi below (expt 2 20)
+                                      sum (ash (aref scanline j) (* 8 i))
+                                        into s of-type (unsigned-byte 32)
+                                      finally (return s)))))
         png-state))))
 
 (defun get-scanlines (data h filtered-scanline-length)
@@ -145,6 +153,7 @@
                                        (min (length data) (* (1+ i) filtered-scanline-length)))))
     scanlines))
 
+(declaim (inline sub-byte up-byte subup-byte paeth-predictor))
 (defun sub-byte (xi scanline pixel-length)
   (if (> xi pixel-length)
       (aref scanline (- xi pixel-length))
@@ -153,19 +162,20 @@
 (defun up-byte (xi k scanlines)
   (if (zerop k)
       0
-      (aref (aref scanlines (1- k)) xi)))
+      (the (unsigned-byte 8) (aref (aref scanlines (1- k)) xi))))
 
 (defun subup-byte (xi k scanlines pixel-length)
   (if (or (zerop k)
           (<= xi pixel-length))
       0
-      (aref (aref scanlines (1- k)) (- xi pixel-length))))
+      (the (unsigned-byte 8) (aref (aref scanlines (1- k)) (- xi pixel-length)))))
 
 (defun paeth-predictor (xi k scanlines pixel-length)
   (let ((scanline (aref scanlines k)))
     (let ((a (sub-byte xi scanline pixel-length))
           (b (up-byte xi k scanlines))
           (c (subup-byte xi k scanlines pixel-length)))
+      (declare (type (unsigned-byte 8) a b c))
       (let ((p (- (+ a
                      b)
                   c)))
@@ -180,26 +190,34 @@
                 (t c)))))))
 
 (defun unfilter-scanlines (scanlines pixel-length)
+  (declare (type simple-vector scanlines)
+           (fixnum pixel-length))
   (iter (for scanline in-vector scanlines with-index k)
+    (declare (type (simple-array (unsigned-byte 8) (*)) scanline)
+             (fixnum k))
     (unless (zerop (length scanline))
       (ecase (aref scanline 0)
         (0 nil)
         (1 (iter (for x in-vector scanline from 1 with-index xi)
+             (declare (fixnum xi))
              (setf (aref scanline xi)
-                   (mod (+ x (sub-byte xi scanline pixel-length)) 256))))
+                   (ldb (byte 8 0) (+ x (sub-byte xi scanline pixel-length))))))
         (2 (iter (for x in-vector scanline from 1 with-index xi)
+             (declare (fixnum xi))
              (setf (aref scanline xi)
-                   (mod (+ x (up-byte xi k scanlines)) 256))))
+                   (ldb (byte 8 0)  (+ x (up-byte xi k scanlines))))))
         (3 (iter (for x in-vector scanline from 1 with-index xi)
+             (declare (fixnum xi))
              (setf (aref scanline xi)
-                   (mod (+ x (floor (+ (sub-byte xi scanline pixel-length)
-                                       (up-byte xi k scanlines))
-                                    2))
-                        256))))
+                   (ldb (byte 8 0)
+                        (+ x
+                           (floor (+ (sub-byte xi scanline pixel-length)
+                                     (up-byte xi k scanlines))
+                                  2))))))
         (4 (iter (for x in-vector scanline from 1 with-index xi)
+             (declare (fixnum xi))
              (setf (aref scanline xi)
-                   (mod (+ x (paeth-predictor xi k scanlines pixel-length))
-                        256)))))))
+                   (ldb (byte 8 0)  (+ x (paeth-predictor xi k scanlines pixel-length)))))))))
   scanlines)
 
 (defun finish-decoding (png-state)
@@ -213,3 +231,12 @@
       (:adam7-interlace (decode-interlaced decompressed-data png-state)))
     (values (image-data png-state)
             png-state)))
+
+(defmacro profile (&body body)
+  `(progn
+     (sb-profile:unprofile)
+     (sb-profile:profile ,(package-name :png-read))
+     ,@body
+     (sb-profile:report)
+     (sb-profile:unprofile)
+     (sb-profile:reset)))

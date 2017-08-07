@@ -65,7 +65,7 @@
                              (:warn (warn condition ))
                              ((:no-action nil) nil)))))
                        (collect (eql read-crc computed-crc)))))))
-            (until (finished *png-state*)))))
+             (until (finished *png-state*)))))
       (unless (finished *png-state*)
         (if (png-file *png-state*)
             (error "No IEND chunk in file ~a." (png-file *png-state*))
