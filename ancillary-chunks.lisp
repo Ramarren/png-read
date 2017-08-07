@@ -23,7 +23,7 @@
                           (if (eql (aref imd i j) transp)
                               0
                               255))
-                         (:truecolor
+                         ((:truecolor8 :truecolor16)
                           (if (every #'identity
                                      ;;strange... SBCL hangs during compilation when
                                      ;;           always iterate keyword is used
@@ -42,14 +42,17 @@
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|tRNS|)) chunk-data)
   (ecase (colour-type *png-state*)
-    (:greyscale (setf (transparency *png-state*)
-                      (big-endian-vector-to-integer chunk-data)))
-    (:truecolor (setf (transparency *png-state*)
-                      (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
-                              (big-endian-vector-to-integer (subseq chunk-data 2 4))
-                              (big-endian-vector-to-integer (subseq chunk-data 4 6)))))
-    (:indexed-colour (setf (transparency *png-state*)
-                           chunk-data)))
+    (:greyscale
+     (setf (transparency *png-state*)
+           (big-endian-vector-to-integer chunk-data)))
+    ((:truecolor8 :truecolor16)
+     (setf (transparency *png-state*)
+           (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
+                   (big-endian-vector-to-integer (subseq chunk-data 2 4))
+                   (big-endian-vector-to-integer (subseq chunk-data 4 6)))))
+    (:indexed-colour
+     (setf (transparency *png-state*)
+           chunk-data)))
   (push #'build-transparency-map (postprocess-ancillaries *png-state*)))
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|gAMA|)) chunk-data)
@@ -60,15 +63,18 @@
   (setf (significant-bits *png-state*)
         (ecase (colour-type *png-state*)
           (:greyscale (list :greyscale (aref chunk-data 0)))
-          ((:truecolor :indexed-colour) (list :red (aref chunk-data 0)
-                       :green (aref chunk-data 1)
-                       :blue (aref chunk-data 2)))
-          (:greyscale-alpha (list :greyscale (aref chunk-data 0)
-                   :alpha (aref chunk-data 1)))
-          (:truecolor-alpha (list :red (aref chunk-data 0)
-                   :green (aref chunk-data 1)
-                   :blue (aref chunk-data 2)
-                   :alpha (aref chunk-data 3))))))
+          ((:truecolor8 :truecolor16 :indexed-colour)
+           (list :red (aref chunk-data 0)
+                 :green (aref chunk-data 1)
+                 :blue (aref chunk-data 2)))
+          (:greyscale-alpha
+           (list :greyscale (aref chunk-data 0)
+                 :alpha (aref chunk-data 1)))
+          ((:truecolor-alpha8 :truecolor-alpha16)
+           (list :red (aref chunk-data 0)
+                 :green (aref chunk-data 1)
+                 :blue (aref chunk-data 2)
+                 :alpha (aref chunk-data 3))))))
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|sRGB|)) chunk-data)
   (setf (rendering-intent *png-state*)
@@ -118,12 +124,13 @@
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|bKGD|)) chunk-data)
   (setf (preferred-background *png-state*)
-   (ecase (colour-type *png-state*)
-     ((:greyscale :greyscale-alpha) (big-endian-vector-to-integer chunk-data))
-     ((:truecolor :truecolor-alpha) (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
-                    (big-endian-vector-to-integer (subseq chunk-data 2 4))
-                    (big-endian-vector-to-integer (subseq chunk-data 4 6))))
-     (:indexed-colour (aref chunk-data 0)))))
+        (ecase (colour-type *png-state*)
+          ((:greyscale :greyscale-alpha) (big-endian-vector-to-integer chunk-data))
+          ((:truecolor8 :truecolor16 :truecolor-alpha8 :truecolor-alpha16)
+           (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
+                   (big-endian-vector-to-integer (subseq chunk-data 2 4))
+                   (big-endian-vector-to-integer (subseq chunk-data 4 6))))
+          (:indexed-colour (aref chunk-data 0)))))
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|hIST|)) chunk-data)
   (setf (image-histogram *png-state*)

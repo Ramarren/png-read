@@ -1,9 +1,11 @@
 (in-package :png-read)
 
 (defun big-endian-vector-to-integer (byte-vector)
+  (declare (type (simple-array (unsigned-byte 8) (*)) byte-vector))
   (iter (for i from (1- (length byte-vector)) downto 0)
-        (for j from 0)
-        (summing (ash (aref byte-vector j) (* 8 i)))))
+    (for j from 0)
+    (declare (fixnum i j))
+    (summing (ash (aref byte-vector j) (* 8 i)))))
 
 (define-compiler-macro big-endian-vector-to-integer (&whole form byte-vector-form)
   (if (and (listp byte-vector-form)
@@ -23,4 +25,3 @@
                     (for j from ,start-gensym)
                     (summing (ash (aref ,seq-gensym j) (* 8 i))))))))
       form))
-
