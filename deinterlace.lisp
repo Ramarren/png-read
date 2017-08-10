@@ -86,7 +86,7 @@
             (:greyscale
              (setf (aref image-final x y)
                    (aref sub-image (floor i sub-height) (mod i sub-height))))
-            (((:truecolor8 :truecolor16) :indexed-colour)
+            ((:truecolor8 :truecolor16 :indexed-colour)
              (iter (for k from 0 to 2)
                (setf (aref image-final x y k)
                      (aref sub-image (floor i sub-height) (mod i sub-height) k))))
