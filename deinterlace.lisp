@@ -26,7 +26,7 @@
     (iter (for w in sub-widths)
       (for h in sub-heights)
       (if (zerop w)
-          (vector)
+          (collect (vector))
           (let ((step-ctr
                   (ceiling
                    (* w h bd (ecase colour-type
@@ -60,7 +60,6 @@
             (iter (for i from 0 below 7)
                   (for w in sub-widths)
                   (for h in sub-heights)
-                  (until (zerop w))
                   (for datastream in datastreams)
                   (setf (width png-state) w
                         (height png-state) h)
