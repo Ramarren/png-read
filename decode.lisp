@@ -63,7 +63,7 @@
           for k of-type (unsigned-byte 32) from 0
           do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
                    for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y (* bda 3)) k (mod y 3))
+                   do (setf (aref image-data (floor y 3) k (mod y 3))
                             (loop for i from (1- bda) downto 0
                                   for j from xi below (expt 2 20)
                                   sum (ash (aref scanline j) (* 8 i))
@@ -88,7 +88,7 @@
           for k of-type (unsigned-byte 32) from 0
           do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
                    for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y (* bda 3)) k (mod y 3))
+                   do (setf (aref image-data (floor y 3) k (mod y 3))
                             (loop for i from (1- bda) downto 0
                                   for j from xi below (expt 2 20)
                                   sum (ash (aref scanline j) (* 8 i))
@@ -193,7 +193,7 @@
           for k of-type (unsigned-byte 32) from 0
           do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
                    for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y (* bda 4)) k (mod y 4))
+                   do (setf (aref image-data (floor y 4) k (mod y 4))
                             (loop for i from (1- bda) downto 0
                                   for j from xi below (expt 2 20)
                                   sum (ash (aref scanline j) (* 8 i))
@@ -218,7 +218,7 @@
           for k of-type (unsigned-byte 32) from 0
           do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
                    for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y (* bda 4)) k (mod y 4))
+                   do (setf (aref image-data (floor y 4) k (mod y 4))
                             (loop for i from (1- bda) downto 0
                                   for j from xi below (expt 2 20)
                                   sum (ash (aref scanline j) (* 8 i))
