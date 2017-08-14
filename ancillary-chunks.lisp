@@ -14,7 +14,11 @@
         (imd (image-data png-state))
         (idx (index-data png-state))
         (transp (transparency png-state)))
-   (let ((t-map (make-array (list w h))))
+   (let ((t-map (make-array (list w h)))
+         (opaque (if (or (eql ct :indexed-colour)
+                         (< (bit-depth png-state) 16))
+                     255
+                     65535)))
      (iter (for i from 0 below w)
            (iter (for j from 0 below h)
                  (setf (aref t-map i j)
@@ -22,7 +26,7 @@
                          (:greyscale
                           (if (eql (aref imd i j) transp)
                               0
-                              255))
+                              opaque))
                          ((:truecolor8 :truecolor16)
                           (if (every #'identity
                                      ;;strange... SBCL hangs during compilation when
@@ -31,13 +35,13 @@
                                            (collect (eql (aref imd i j k)
                                                          (aref transp k)))))
                               0
-                              255))
+                              opaque))
                          (:indexed-colour
                           (if (array-in-bounds-p transp (aref idx i j))
                            (setf (aref t-map i j)
                                  (aref transp (aref idx i j)))
                            (setf (aref t-map i j)
-                                 255)))))))
+                                 opaque)))))))
      (setf (transparency png-state) t-map))))
 
 (defmethod parse-ancillary-chunk ((chunk-type (eql '|tRNS|)) chunk-data)
