@@ -35,7 +35,7 @@
                          (:indexed-colour
                           (if (array-in-bounds-p transp (aref idx i j))
                            (setf (aref t-map i j)
-                                 (aref idx i j))
+                                 (aref transp (aref idx i j)))
                            (setf (aref t-map i j)
                                  255)))))))
      (setf (transparency png-state) t-map))))
