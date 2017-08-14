@@ -172,7 +172,7 @@
                    (type (signed-byte 32) xi))
           (ecase bd
             (8 (setf (aref image-data (floor y 2) k (mod y 2)) x))
-            (16 (setf (aref image-data (floor y 4) k (mod y 2))
+            (16 (setf (aref image-data (floor y 2) k (mod y 2))
                       (big-endian-vector-to-integer (subseq scanline xi (+ xi 2)))))))))
     png-state))
 
