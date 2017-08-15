@@ -17,14 +17,10 @@
           (bit-depth *png-state*) bit-depth
           (colour-type *png-state*) (ecase colour-type
                                       (0 :greyscale)
-                                      (2 (ecase bit-depth
-                                           (8 :truecolor8)
-                                           (16 :truecolor16)))
+                                      (2 :truecolor)
                                       (3 :indexed-colour)
                                       (4 :greyscale-alpha)
-                                      (6 (ecase bit-depth
-                                           (8 :truecolor-alpha8)
-                                           (16 :truecolor-alpha16))))
+                                      (6 :truecolor-alpha))
           (compression *png-state*) (ecase compression
                                       (0 :zlib))
           (filter-method *png-state*) (ecase filter-method

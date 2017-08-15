@@ -27,7 +27,7 @@
                           (if (eql (aref imd i j) transp)
                               0
                               opaque))
-                         ((:truecolor8 :truecolor16)
+                         (:truecolor
                           (if (every #'identity
                                      ;;strange... SBCL hangs during compilation when
                                      ;;           always iterate keyword is used
@@ -49,7 +49,7 @@
     (:greyscale
      (setf (transparency *png-state*)
            (big-endian-vector-to-integer chunk-data)))
-    ((:truecolor8 :truecolor16)
+    (:truecolor
      (setf (transparency *png-state*)
            (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
                    (big-endian-vector-to-integer (subseq chunk-data 2 4))
@@ -67,14 +67,14 @@
   (setf (significant-bits *png-state*)
         (ecase (colour-type *png-state*)
           (:greyscale (list :greyscale (aref chunk-data 0)))
-          ((:truecolor8 :truecolor16 :indexed-colour)
+          ((:truecolor :indexed-colour)
            (list :red (aref chunk-data 0)
                  :green (aref chunk-data 1)
                  :blue (aref chunk-data 2)))
           (:greyscale-alpha
            (list :greyscale (aref chunk-data 0)
                  :alpha (aref chunk-data 1)))
-          ((:truecolor-alpha8 :truecolor-alpha16)
+          (:truecolor-alpha
            (list :red (aref chunk-data 0)
                  :green (aref chunk-data 1)
                  :blue (aref chunk-data 2)
@@ -130,7 +130,7 @@
   (setf (preferred-background *png-state*)
         (ecase (colour-type *png-state*)
           ((:greyscale :greyscale-alpha) (big-endian-vector-to-integer chunk-data))
-          ((:truecolor8 :truecolor16 :truecolor-alpha8 :truecolor-alpha16)
+          ((:truecolor :truecolor-alpha)
            (vector (big-endian-vector-to-integer (subseq chunk-data 0 2))
                    (big-endian-vector-to-integer (subseq chunk-data 2 4))
                    (big-endian-vector-to-integer (subseq chunk-data 4 6))))

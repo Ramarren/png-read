@@ -30,10 +30,10 @@
           (let ((step-ctr
                   (ceiling
                    (* w h bd (ecase colour-type
-                               ((:truecolor8 :truecolor16) 3)
+                               (:truecolor 3)
                                (:greyscale 1)
                                (:greyscale-alpha 2)
-                               ((:truecolor-alpha8 :truecolor-alpha16) 4)
+                               (:truecolor-alpha 4)
                                (:indexed-colour 1))) 8)))
             (iter (until (zerop (mod step-ctr h)))
               (incf step-ctr))
@@ -70,10 +70,10 @@
 (defun finish-deinterlace (colour-type w h sub-images sub-arrays sub-heights)
   (let ((image-dimensions (ecase colour-type
                             (:greyscale (list w h))
-                            ((:truecolor8 :truecolor16) (list w h 3))
+                            (:truecolor (list w h 3))
                             (:indexed-colour (list w h 3))
                             (:greyscale-alpha (list w h 2))
-                            ((:truecolor-alpha8 :truecolor-alpha16) (list w h 4)))))
+                            (:truecolor-alpha (list w h 4)))))
     (check-type image-dimensions (cons fixnum (cons fixnum (or null (cons fixnum null)))))
     (let ((image-final (make-array image-dimensions :initial-element 0)))
       (iter (for sub-array in-vector sub-arrays)
@@ -85,7 +85,7 @@
             (:greyscale
              (setf (aref image-final x y)
                    (aref sub-image (floor i sub-height) (mod i sub-height))))
-            ((:truecolor8 :truecolor16 :indexed-colour)
+            ((:truecolor :indexed-colour)
              (iter (for k from 0 to 2)
                (setf (aref image-final x y k)
                      (aref sub-image (floor i sub-height) (mod i sub-height) k))))
@@ -93,7 +93,7 @@
              (iter (for k from 0 to 1)
                (setf (aref image-final x y k)
                      (aref sub-image (floor i sub-height) (mod i sub-height) k))))
-            ((:truecolor-alpha8 :truecolor-alpha16)
+            (:truecolor-alpha
              (iter (for k from 0 to 3)
                (setf (aref image-final x y k)
                      (aref sub-image (floor i sub-height) (mod i sub-height) k)))))))

@@ -46,7 +46,7 @@
                       (big-endian-vector-to-integer (subseq scanline xi (+ xi 2)))))))))
     png-state))
 
-(defmethod decode-data ((colour-type (eql :truecolor8)) data png-state)
+(defmethod decode-data ((colour-type (eql :truecolor)) data png-state)
   (let* ((h (height png-state))
          (w (width png-state))
          (bd (bit-depth png-state))
@@ -58,42 +58,29 @@
     (setf (image-data png-state)
           (make-array (list w h 3) :element-type `(unsigned-byte ,bd)))
     (unfilter-scanlines scanlines (* bda 3))
-    (loop with image-data of-type (simple-array (unsigned-byte 8) (* * *)) = (image-data png-state)
-          for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
-          for k of-type (unsigned-byte 32) from 0
-          do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
-                   for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y 3) k (mod y 3))
-                            (loop for i from (1- bda) downto 0
-                                  for j from xi below (expt 2 20)
-                                  sum (ash (aref scanline j) (* 8 i))
-                                    into s of-type (unsigned-byte 32)
-                                  finally (return s)))))
-    png-state))
-
-(defmethod decode-data ((colour-type (eql :truecolor16)) data png-state)
-  (let* ((h (height png-state))
-         (w (width png-state))
-         (bd (bit-depth png-state))
-         (bda (/ bd 8))
-         (scanlines (get-scanlines data h (1+ (* bda w 3)))))
-    (declare (type (unsigned-byte 32) w h bd)
-             (type (unsigned-byte 3) bda)
-             (simple-vector scanlines))
-    (setf (image-data png-state)
-          (make-array (list w h 3) :element-type `(unsigned-byte ,bd)))
-    (unfilter-scanlines scanlines (* bda 3))
-    (loop with image-data of-type (simple-array (unsigned-byte 16) (* * *)) = (image-data png-state)
-          for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
-          for k of-type (unsigned-byte 32) from 0
-          do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
-                   for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y 3) k (mod y 3))
-                            (loop for i from (1- bda) downto 0
-                                  for j from xi below (expt 2 20)
-                                  sum (ash (aref scanline j) (* 8 i))
-                                    into s of-type (unsigned-byte 32)
-                                  finally (return s)))))
+    (case bd
+      (8 (loop with image-data of-type (simple-array (unsigned-byte 8) (* * *)) = (image-data png-state)
+               for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
+               for k of-type (unsigned-byte 32) from 0
+               do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
+                        for y of-type (unsigned-byte 32) from 0
+                        do (setf (aref image-data (floor y 3) k (mod y 3))
+                                 (loop for i from (1- bda) downto 0
+                                       for j from xi below (expt 2 20)
+                                       sum (ash (aref scanline j) (* 8 i))
+                                         into s of-type (unsigned-byte 32)
+                                       finally (return s))))))
+      (16 (loop with image-data of-type (simple-array (unsigned-byte 16) (* * *)) = (image-data png-state)
+                for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
+                for k of-type (unsigned-byte 32) from 0
+                do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
+                         for y of-type (unsigned-byte 32) from 0
+                         do (setf (aref image-data (floor y 3) k (mod y 3))
+                                  (loop for i from (1- bda) downto 0
+                                        for j from xi below (expt 2 20)
+                                        sum (ash (aref scanline j) (* 8 i))
+                                          into s of-type (unsigned-byte 32)
+                                        finally (return s)))))))
     png-state))
 
 (defun set-image-slice-to-index (x y idx palette image-data)
@@ -176,7 +163,7 @@
                       (big-endian-vector-to-integer (subseq scanline xi (+ xi 2)))))))))
     png-state))
 
-(defmethod decode-data ((colour-type (eql :truecolor-alpha8)) data png-state)
+(defmethod decode-data ((colour-type (eql :truecolor-alpha)) data png-state)
   (let* ((h (height png-state))
          (w (width png-state))
          (bd (bit-depth png-state))
@@ -188,42 +175,29 @@
     (setf (image-data png-state)
           (make-array (list w h 4) :element-type `(unsigned-byte ,bd)))
     (unfilter-scanlines scanlines (* bda 4))
-    (loop with image-data of-type (simple-array (unsigned-byte 8) (* * *)) = (image-data png-state)
-          for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
-          for k of-type (unsigned-byte 32) from 0
-          do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
-                   for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y 4) k (mod y 4))
-                            (loop for i from (1- bda) downto 0
-                                  for j from xi below (expt 2 20)
-                                  sum (ash (aref scanline j) (* 8 i))
-                                    into s of-type (unsigned-byte 32)
-                                  finally (return s)))))
-    png-state))
-
-(defmethod decode-data ((colour-type (eql :truecolor-alpha16)) data png-state)
-  (let* ((h (height png-state))
-         (w (width png-state))
-         (bd (bit-depth png-state))
-         (bda (/ bd 8))
-         (scanlines (get-scanlines data h (1+ (* bda w 4)))))
-    (declare (type (unsigned-byte 32) w h bd)
-             (type (unsigned-byte 3) bda)
-             (simple-vector scanlines))
-    (setf (image-data png-state)
-          (make-array (list w h 4) :element-type `(unsigned-byte ,bd)))
-    (unfilter-scanlines scanlines (* bda 4))
-    (loop with image-data of-type (simple-array (unsigned-byte 16) (* * *)) = (image-data png-state)
-          for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
-          for k of-type (unsigned-byte 32) from 0
-          do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
-                   for y of-type (unsigned-byte 32) from 0
-                   do (setf (aref image-data (floor y 4) k (mod y 4))
-                            (loop for i from (1- bda) downto 0
-                                  for j from xi below (expt 2 20)
-                                  sum (ash (aref scanline j) (* 8 i))
-                                    into s of-type (unsigned-byte 32)
-                                  finally (return s)))))
+    (case bd
+      (8 (loop with image-data of-type (simple-array (unsigned-byte 8) (* * *)) = (image-data png-state)
+               for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
+               for k of-type (unsigned-byte 32) from 0
+               do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
+                        for y of-type (unsigned-byte 32) from 0
+                        do (setf (aref image-data (floor y 4) k (mod y 4))
+                                 (loop for i from (1- bda) downto 0
+                                       for j from xi below (expt 2 20)
+                                       sum (ash (aref scanline j) (* 8 i))
+                                         into s of-type (unsigned-byte 32)
+                                       finally (return s))))))
+      (16 (loop with image-data of-type (simple-array (unsigned-byte 16) (* * *)) = (image-data png-state)
+                for scanline of-type (simple-array (unsigned-byte 8) (*)) across scanlines
+                for k of-type (unsigned-byte 32) from 0
+                do (loop for xi of-type (unsigned-byte 32) from 1 below (length scanline) by bda
+                         for y of-type (unsigned-byte 32) from 0
+                         do (setf (aref image-data (floor y 4) k (mod y 4))
+                                  (loop for i from (1- bda) downto 0
+                                        for j from xi below (expt 2 20)
+                                        sum (ash (aref scanline j) (* 8 i))
+                                          into s of-type (unsigned-byte 32)
+                                        finally (return s)))))))
     png-state))
 
 (defun get-scanlines (data h filtered-scanline-length)
